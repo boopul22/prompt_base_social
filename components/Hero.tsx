@@ -3,7 +3,14 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Iconify from './ui/Iconify';
-import { categories } from '@/lib/data';
+
+const categories = [
+    { name: 'Writing', slug: 'writing', icon: 'solar:pen-new-square-linear' },
+    { name: 'Coding', slug: 'coding', icon: 'solar:code-circle-linear' },
+    { name: 'Art Generation', slug: 'art', icon: 'solar:gallery-wide-linear' },
+    { name: 'Marketing', slug: 'marketing', icon: 'solar:chart-square-linear' },
+    { name: 'Productivity', slug: 'productivity', icon: 'solar:check-circle-linear' },
+];
 
 export default function Hero() {
     const router = useRouter();

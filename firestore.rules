@@ -1,0 +1,81 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAuth() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return isAuth() && request.auth.uid == uid;
+    }
+
+    // Users
+    match /users/{uid} {
+      allow read: if true;
+      allow create, update: if isOwner(uid);
+    }
+
+    // Username uniqueness map
+    match /usernames/{username} {
+      allow read: if true;
+      allow create: if isAuth() && request.resource.data.uid == request.auth.uid;
+      allow update, delete: if false;
+    }
+
+    // Categories (admin-only writes via Admin SDK)
+    match /categories/{slug} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // Prompts
+    match /prompts/{promptId} {
+      allow read: if true;
+      allow create: if isAuth() && request.resource.data.author.uid == request.auth.uid;
+      allow update: if isAuth() && (
+        resource.data.author.uid == request.auth.uid ||
+        request.resource.data.diff(resource.data).affectedKeys()
+          .hasOnly(['likesCount', 'bookmarksCount', 'commentsCount'])
+      );
+      allow delete: if isAuth() && resource.data.author.uid == request.auth.uid;
+
+      // Likes subcollection
+      match /likes/{uid} {
+        allow read: if true;
+        allow create, delete: if isOwner(uid);
+      }
+
+      // Bookmarks subcollection
+      match /bookmarks/{uid} {
+        allow read: if true;
+        allow create, delete: if isOwner(uid);
+      }
+
+      // Comments subcollection
+      match /comments/{commentId} {
+        allow read: if true;
+        allow create: if isAuth() && request.resource.data.author.uid == request.auth.uid;
+        allow delete: if isAuth() && resource.data.author.uid == request.auth.uid;
+      }
+    }
+
+    // User bookmarks reverse index
+    match /userBookmarks/{docId} {
+      allow read: if isAuth() && resource.data.uid == request.auth.uid;
+      allow create: if isAuth() && request.resource.data.uid == request.auth.uid;
+      allow delete: if isAuth() && resource.data.uid == request.auth.uid;
+    }
+
+    // Notifications
+    match /notifications/{id} {
+      allow read: if isAuth() && resource.data.recipientUid == request.auth.uid;
+      allow update: if isAuth()
+                    && resource.data.recipientUid == request.auth.uid
+                    && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['read']);
+      allow create: if isAuth();
+      allow delete: if isAuth() && resource.data.recipientUid == request.auth.uid;
+    }
+  }
+}

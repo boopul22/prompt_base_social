@@ -1,15 +1,21 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Iconify from './ui/Iconify';
+import { useAuth } from '@/contexts/AuthContext';
+import Link from 'next/link';
 
 export default function SubmitPrompt() {
+    const router = useRouter();
+    const { user, loading } = useAuth();
     const [title, setTitle] = useState('');
     const [category, setCategory] = useState('Writing');
     const [model, setModel] = useState('GPT-4');
     const [promptText, setPromptText] = useState('');
     const [isPublic, setIsPublic] = useState(true);
     const [submitted, setSubmitted] = useState(false);
+    const [submitting, setSubmitting] = useState(false);
     const [errors, setErrors] = useState<Record<string, string>>({});
 
     const validate = () => {
@@ -21,18 +27,62 @@ export default function SubmitPrompt() {
         return Object.keys(newErrors).length === 0;
     };
 
-    const handleSubmit = () => {
-        if (!validate()) return;
-        setSubmitted(true);
-        setTimeout(() => {
-            setTitle('');
-            setPromptText('');
-            setCategory('Writing');
-            setModel('GPT-4');
-            setIsPublic(true);
-            setSubmitted(false);
-        }, 3000);
+    const handleSubmit = async () => {
+        if (!validate() || submitting) return;
+        setSubmitting(true);
+        try {
+            const res = await fetch('/api/prompts', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    title,
+                    description: promptText.slice(0, 200),
+                    promptText,
+                    model,
+                    category,
+                    tags: [],
+                    isPublic,
+                }),
+            });
+            if (res.ok) {
+                const data = await res.json();
+                setSubmitted(true);
+                setTimeout(() => router.push(`/prompt/${data.id}`), 2000);
+            } else {
+                const data = await res.json();
+                setErrors({ submit: data.error || 'Failed to submit' });
+            }
+        } catch {
+            setErrors({ submit: 'Network error' });
+        } finally {
+            setSubmitting(false);
+        }
     };
+
+    if (loading) {
+        return (
+            <section className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                <div className="animate-pulse space-y-4">
+                    <div className="h-8 bg-surface rounded w-48"></div>
+                    <div className="h-4 bg-surface rounded w-64"></div>
+                </div>
+            </section>
+        );
+    }
+
+    if (!user) {
+        return (
+            <section className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                <div className="text-center py-16">
+                    <h2 className="font-serif text-2xl text-foreground font-medium mb-2">Sign in to Submit</h2>
+                    <p className="text-foreground/60 text-sm mb-6">You need an account to share prompts with the community.</p>
+                    <Link href="/auth/login" className="bg-primary text-primary-foreground px-6 py-3 rounded-lg font-medium hover:bg-primary/90 transition-colors">
+                        Sign In
+                    </Link>
+                </div>
+            </section>
+        );
+    }
 
     if (submitted) {
         return (
@@ -42,7 +92,7 @@ export default function SubmitPrompt() {
                         <Iconify icon="solar:check-circle-bold" width="32" className="text-success" />
                     </div>
                     <h2 className="font-serif text-2xl text-foreground font-medium mb-2">Prompt Published!</h2>
-                    <p className="text-foreground/60 text-sm">Your prompt has been shared with the community.</p>
+                    <p className="text-foreground/60 text-sm">Redirecting to your prompt...</p>
                 </div>
             </section>
         );
@@ -55,8 +105,11 @@ export default function SubmitPrompt() {
                 <p className="text-foreground/60 text-sm mt-1">Share your creativity with the community.</p>
             </div>
 
+            {errors.submit && (
+                <div className="bg-error/10 text-error text-sm px-4 py-3 rounded-lg mb-4">{errors.submit}</div>
+            )}
+
             <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
-                {/* Title Input */}
                 <div className="space-y-2">
                     <label className="block text-xs font-medium text-foreground uppercase tracking-wide">Prompt Title</label>
                     <input
@@ -69,7 +122,6 @@ export default function SubmitPrompt() {
                     {errors.title && <p className="text-error text-xs">{errors.title}</p>}
                 </div>
 
-                {/* Category & Model Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
                         <label className="block text-xs font-medium text-foreground uppercase tracking-wide">Category</label>
@@ -105,7 +157,6 @@ export default function SubmitPrompt() {
                     </div>
                 </div>
 
-                {/* Large Text Area */}
                 <div className="space-y-2">
                     <label className="block text-xs font-medium text-foreground uppercase tracking-wide">Prompt Text</label>
                     <textarea
@@ -118,7 +169,6 @@ export default function SubmitPrompt() {
                     {errors.promptText && <p className="text-error text-xs">{errors.promptText}</p>}
                 </div>
 
-                {/* Visibility Toggle */}
                 <div className="flex items-center justify-between bg-secondary p-4 rounded-lg border border-border-subtle">
                     <div>
                         <span className="block text-sm font-medium text-secondary-foreground">Visibility</span>
@@ -133,14 +183,14 @@ export default function SubmitPrompt() {
                     </button>
                 </div>
 
-                {/* Submit Action */}
                 <div className="pt-4">
                     <button
                         type="button"
                         onClick={handleSubmit}
-                        className="w-full bg-primary text-primary-foreground font-medium py-3 rounded-lg shadow-lg hover:shadow-xl hover:translate-y-[-2px] transition-all flex justify-center items-center gap-2"
+                        disabled={submitting}
+                        className="w-full bg-primary text-primary-foreground font-medium py-3 rounded-lg shadow-lg hover:shadow-xl hover:translate-y-[-2px] transition-all flex justify-center items-center gap-2 disabled:opacity-50"
                     >
-                        <Iconify icon="solar:check-circle-linear" width="20" /> Publish Prompt
+                        <Iconify icon="solar:check-circle-linear" width="20" /> {submitting ? 'Publishing...' : 'Publish Prompt'}
                     </button>
                 </div>
             </form>

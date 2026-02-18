@@ -1,13 +1,16 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Iconify from '../ui/Iconify';
 
 export default function Sidebar() {
+    const router = useRouter();
     const searchParams = useSearchParams();
     const currentSort = searchParams.get('sort') || 'trending';
     const currentCategory = searchParams.get('category') || '';
+    const [searchQuery, setSearchQuery] = useState('');
 
     const sortOptions = [
         { value: 'trending', label: 'Trending', icon: 'solar:flame-linear' },
@@ -25,14 +28,16 @@ export default function Sidebar() {
     return (
         <aside className="hidden lg:block lg:col-span-3 sticky top-24 h-fit space-y-8">
             {/* Search */}
-            <div className="relative">
+            <form onSubmit={(e) => { e.preventDefault(); if (searchQuery.trim()) router.push(`/?q=${encodeURIComponent(searchQuery.trim())}`); }} className="relative">
                 <Iconify icon="solar:magnifer-linear" className="absolute left-3 top-1/2 -translate-y-1/2 text-secondary-foreground/50" />
                 <input
                     type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Search prompts..."
                     className="w-full bg-secondary border border-border focus:border-primary text-secondary-foreground rounded-lg pl-10 pr-4 py-2.5 text-sm outline-none placeholder-secondary-foreground/50 transition-colors"
                 />
-            </div>
+            </form>
 
             {/* Sort Filters */}
             <div>

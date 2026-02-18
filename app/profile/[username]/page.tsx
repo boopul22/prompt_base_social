@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import UserProfile from '@/components/UserProfile';
-import { getUserByUsername, getPromptsByUser } from '@/lib/data';
+import { getUserByUsername, getPromptsByUser } from '@/lib/firebase/firestore-admin';
 
 interface ProfilePageProps {
     params: Promise<{ username: string }>;
@@ -8,13 +8,13 @@ interface ProfilePageProps {
 
 export default async function ProfilePage({ params }: ProfilePageProps) {
     const { username } = await params;
-    const user = getUserByUsername(username);
+    const user = await getUserByUsername(username);
 
     if (!user) {
         notFound();
     }
 
-    const prompts = getPromptsByUser(username);
+    const prompts = await getPromptsByUser(user.uid);
 
     return <UserProfile user={user} prompts={prompts} />;
 }

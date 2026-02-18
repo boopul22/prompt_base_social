@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Playfair_Display, DM_Sans } from "next/font/google";
 import Navbar from "@/components/layout/Navbar";
+import { AuthProvider } from "@/contexts/AuthContext";
 import "./globals.css";
 
 const playfair = Playfair_Display({
@@ -33,10 +34,12 @@ export default function RootLayout({
       <body
         className={`${playfair.variable} ${dmSans.variable} antialiased font-sans bg-background text-foreground`}
       >
-        <div className="min-h-screen">
-          <Navbar />
-          {children}
-        </div>
+        <AuthProvider>
+          <div className="min-h-screen">
+            <Navbar />
+            {children}
+          </div>
+        </AuthProvider>
       </body>
     </html>
   );

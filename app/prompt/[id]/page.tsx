@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import PromptDetail from '@/components/PromptDetail';
-import { getPromptById, getCommentsByPromptId } from '@/lib/data';
+import { getPromptById, getCommentsByPromptId } from '@/lib/firebase/firestore-admin';
 
 interface PromptPageProps {
     params: Promise<{ id: string }>;
@@ -8,13 +8,13 @@ interface PromptPageProps {
 
 export default async function PromptPage({ params }: PromptPageProps) {
     const { id } = await params;
-    const prompt = getPromptById(id);
+    const prompt = await getPromptById(id);
 
     if (!prompt) {
         notFound();
     }
 
-    const comments = getCommentsByPromptId(id);
+    const comments = await getCommentsByPromptId(id);
 
     return <PromptDetail prompt={prompt} comments={comments} />;
 }

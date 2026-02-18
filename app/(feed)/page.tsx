@@ -3,15 +3,17 @@ import Hero from '@/components/Hero';
 import Feed from '@/components/Feed';
 import Sidebar from '@/components/layout/Sidebar';
 import RightSidebar from '@/components/layout/RightSidebar';
-import { getPrompts } from '@/lib/data';
+import { getPromptsFeed, searchPrompts } from '@/lib/firebase/firestore-admin';
 
 interface HomeProps {
-    searchParams: Promise<{ sort?: string; category?: string }>;
+    searchParams: Promise<{ sort?: string; category?: string; q?: string; tag?: string }>;
 }
 
 export default async function Home({ searchParams }: HomeProps) {
     const params = await searchParams;
-    const prompts = getPrompts({ sort: params.sort, category: params.category });
+    const prompts = params.q || params.tag
+        ? await searchPrompts(params.q || '', params.tag)
+        : await getPromptsFeed({ sort: params.sort, category: params.category });
 
     return (
         <>

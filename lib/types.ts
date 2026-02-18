@@ -1,16 +1,29 @@
-export interface User {
+// ── Embedded author (denormalized on prompts, comments, notifications) ──
+export interface AuthorEmbed {
+  uid: string;
   username: string;
   name: string;
   avatar: string;
-  bio?: string;
-  categories?: string[];
-  stats: {
-    prompts: number;
-    likes: string;
-    saved: number;
-  };
 }
 
+// ── User ──
+export interface User {
+  uid: string;
+  username: string;
+  name: string;
+  avatar: string;
+  bio: string;
+  categories: string[];
+  stats: {
+    prompts: number;
+    likes: number;
+    saved: number;
+  };
+  createdAt: string;
+  updatedAt: string;
+}
+
+// ── Prompt ──
 export interface Prompt {
   id: string;
   title: string;
@@ -19,26 +32,65 @@ export interface Prompt {
   model: string;
   category: string;
   tags: string[];
-  author: User;
-  likes: string;
-  bookmarks: string;
-  createdAt: string;
+  author: AuthorEmbed;
+  likesCount: number;
+  bookmarksCount: number;
+  commentsCount: number;
+  isPublic: boolean;
   isFeatured: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
 
+// ── Comment ──
 export interface Comment {
   id: string;
-  author: string;
+  author: AuthorEmbed;
   content: string;
   createdAt: string;
 }
 
+// ── Category ──
 export interface Category {
   name: string;
   slug: string;
   icon: string;
+  promptCount: number;
 }
 
+// ── Notification ──
+export interface Notification {
+  id: string;
+  recipientUid: string;
+  type: 'like' | 'comment' | 'bookmark' | 'featured';
+  actorUid: string;
+  actor: AuthorEmbed;
+  promptId?: string;
+  promptTitle?: string;
+  message: string;
+  read: boolean;
+  createdAt: string;
+}
+
+// ── User Bookmark (reverse index) ──
+export interface UserBookmark {
+  id: string;
+  uid: string;
+  promptId: string;
+  prompt: {
+    id: string;
+    title: string;
+    description: string;
+    model: string;
+    category: string;
+    likesCount: number;
+    bookmarksCount: number;
+    author: Pick<AuthorEmbed, 'username' | 'name' | 'avatar'>;
+  };
+  createdAt: string;
+}
+
+// ── Iconify web component type ──
 declare global {
   namespace JSX {
     interface IntrinsicElements {
