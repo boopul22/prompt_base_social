@@ -1,26 +1,118 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* =============================================
+     FreePromptBase Design Tokens - Deep Ocean
+     ============================================= */
+
+  /* FOUNDATIONS - Page-level canvas and text */
+  --color-background: #0F1923;          /* Deep Ocean Ink */
+  --color-foreground: #E8ECF0;          /* Silver Mist */
+
+  /* PRIMARY - Buttons, CTAs, brand identity */
+  --color-primary: #F5A623;             /* Warm Amber */
+  --color-primary-foreground: #0F1923;  /* Dark on Amber */
+
+  /* SECONDARY - Cards, containers, elevated panels */
+  --color-secondary: #1A2A38;           /* Slate Harbor */
+  --color-secondary-foreground: #D1D9E0;/* Pale Steel */
+
+  /* MUTED - Placeholders, disabled states, de-emphasized text */
+  --color-muted: #5A6E7F;              /* Storm Gray */
+  --color-muted-foreground: #8A9AAA;   /* Haze Blue */
+
+  /* ACCENT - Decorative highlights, secondary actions, tags */
+  --color-accent: #2ECDA7;             /* Ocean Teal */
+  --color-accent-foreground: #0F1923;  /* Dark on Teal */
+
+  /* SURFACE - Depth/elevation layers */
+  --color-surface: #152230;            /* Deep Current (level 1) */
+  --color-surface-elevated: #1E3244;   /* Harbor Blue (level 2) */
+
+  /* BORDER - Structural delineation */
+  --color-border: #2A3D4E;             /* Tide Line */
+  --color-border-subtle: #1E3040;      /* Deep Border */
+
+  /* SEMANTIC - Success, Warning, Error, Info */
+  --color-success: #34D399;            /* Emerald Glow */
+  --color-success-foreground: #0F1923;
+  --color-warning: #FBBF24;            /* Sunbeam Yellow */
+  --color-warning-foreground: #0F1923;
+  --color-error: #F87171;              /* Coral Alert */
+  --color-error-foreground: #0F1923;
+  --color-info: #60A5FA;               /* Sky Signal */
+  --color-info-foreground: #0F1923;
+
+  /* Font Variables (mapped from layout.tsx) */
+  --font-serif: var(--font-serif);
+  --font-sans: var(--font-sans);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* Foundations */
+  --color-background: var(--color-background);
+  --color-foreground: var(--color-foreground);
+
+  /* Primary */
+  --color-primary: var(--color-primary);
+  --color-primary-foreground: var(--color-primary-foreground);
+
+  /* Secondary */
+  --color-secondary: var(--color-secondary);
+  --color-secondary-foreground: var(--color-secondary-foreground);
+
+  /* Muted */
+  --color-muted: var(--color-muted);
+  --color-muted-foreground: var(--color-muted-foreground);
+
+  /* Accent */
+  --color-accent: var(--color-accent);
+  --color-accent-foreground: var(--color-accent-foreground);
+
+  /* Surface */
+  --color-surface: var(--color-surface);
+  --color-surface-elevated: var(--color-surface-elevated);
+
+  /* Border */
+  --color-border: var(--color-border);
+  --color-border-subtle: var(--color-border-subtle);
+
+  /* Semantic */
+  --color-success: var(--color-success);
+  --color-success-foreground: var(--color-success-foreground);
+  --color-warning: var(--color-warning);
+  --color-warning-foreground: var(--color-warning-foreground);
+  --color-error: var(--color-error);
+  --color-error-foreground: var(--color-error-foreground);
+  --color-info: var(--color-info);
+  --color-info-foreground: var(--color-info-foreground);
+
+  /* Fonts */
+  --font-serif: var(--font-serif);
+  --font-sans: var(--font-sans);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
 }
 
+::-webkit-scrollbar-track {
+  background: var(--color-background);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-muted);
+}
+
+/* Base styles */
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-sans);
 }
