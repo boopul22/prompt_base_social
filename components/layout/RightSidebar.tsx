@@ -21,7 +21,7 @@ export default function RightSidebar() {
                         <h3 className="font-serif text-lg font-medium mb-4 text-secondary-foreground">Your Profile</h3>
                         <div className="flex items-center gap-3 mb-4">
                             <div className="w-12 h-12 rounded-full overflow-hidden flex-shrink-0">
-                                <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
+                                <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" loading="lazy" decoding="async" />
                             </div>
                             <div>
                                 <div className="text-sm font-medium text-secondary-foreground">{user.name}</div>
@@ -35,7 +35,7 @@ export default function RightSidebar() {
                             </div>
                             <div>
                                 <span className="block text-lg font-medium text-secondary-foreground">{formatCount(user.stats.likes)}</span>
-                                <span className="text-[10px] text-secondary-foreground/50 uppercase tracking-wider">Likes</span>
+                                <span className="text-[10px] text-secondary-foreground/50 uppercase tracking-wider">Upvotes</span>
                             </div>
                             <div>
                                 <span className="block text-lg font-medium text-secondary-foreground">{user.stats.saved}</span>

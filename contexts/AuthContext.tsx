@@ -61,14 +61,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const unsubscribe = onAuthStateChanged(auth, async (fbUser) => {
       setFirebaseUser(fbUser);
       if (fbUser) {
-        // Create server session cookie
-        try {
-          const idToken = await fbUser.getIdToken();
-          await createSessionCookie(idToken);
-        } catch {
-          // Session creation may fail on first load if already exists
-        }
-        await fetchUserProfile(fbUser);
+        // Run session cookie creation and profile fetch in parallel
+        const sessionPromise = fbUser.getIdToken()
+          .then((idToken) => createSessionCookie(idToken))
+          .catch(() => { /* Session creation may fail on first load if already exists */ });
+
+        await Promise.all([
+          sessionPromise,
+          fetchUserProfile(fbUser),
+        ]);
       } else {
         setUser(null);
         setNeedsProfile(false);

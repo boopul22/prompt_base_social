@@ -7,7 +7,7 @@ import CopyButton from './ui/CopyButton';
 import { Prompt, Comment } from '@/lib/types';
 import { formatTimeAgo, formatCount } from '@/lib/utils/format';
 import { useAuth } from '@/contexts/AuthContext';
-import { toggleLike, checkIfLiked, toggleBookmark, checkIfBookmarked } from '@/lib/firebase/firestore';
+import { submitVote, toggleBookmark } from '@/lib/firebase/firestore';
 
 interface PromptDetailProps {
     prompt: Prompt;
@@ -16,31 +16,64 @@ interface PromptDetailProps {
 
 export default function PromptDetail({ prompt, comments: initialComments }: PromptDetailProps) {
     const { user } = useAuth();
-    const [liked, setLiked] = useState(false);
+    const [currentVote, setCurrentVote] = useState<1 | -1 | 0>(0);
     const [bookmarked, setBookmarked] = useState(false);
-    const [likesCount, setLikesCount] = useState(prompt.likesCount);
+    const [score, setScore] = useState(prompt.score);
     const [bookmarksCount, setBookmarksCount] = useState(prompt.bookmarksCount);
     const [comments, setComments] = useState(initialComments);
     const [commentText, setCommentText] = useState('');
     const [submitting, setSubmitting] = useState(false);
 
     useEffect(() => {
-        if (user) {
-            checkIfLiked(prompt.id, user.uid).then(setLiked);
-            checkIfBookmarked(prompt.id, user.uid).then(setBookmarked);
+        if (!user) {
+            setCurrentVote(0);
+            setBookmarked(false);
+            return;
         }
+
+        const controller = new AbortController();
+
+        async function loadInteractionState() {
+            try {
+                const res = await fetch('/api/users/me/interactions', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ promptIds: [prompt.id] }),
+                    signal: controller.signal,
+                });
+                if (!res.ok) return;
+
+                const data = await res.json();
+                const votes: Record<string, number> = data.votes || {};
+                const bookmarkedIds = new Set<string>(data.bookmarkedIds || []);
+                setCurrentVote((votes[prompt.id] as 1 | -1) || 0);
+                setBookmarked(bookmarkedIds.has(prompt.id));
+            } catch {
+                // Ignore cancelled/failed reads and keep default interaction state.
+            }
+        }
+
+        void loadInteractionState();
+
+        return () => controller.abort();
     }, [prompt.id, user]);
 
-    async function handleLike() {
+    async function handleVote(value: 1 | -1) {
         if (!user) return;
-        const wasLiked = liked;
-        setLiked(!wasLiked);
-        setLikesCount((c) => c + (wasLiked ? -1 : 1));
+        const prevVote = currentVote;
+        const prevScore = score;
+        const newValue: 1 | -1 | 0 = currentVote === value ? 0 : value;
+
+        setCurrentVote(newValue);
+        setScore((s) => s - prevVote + newValue);
+
         try {
-            await toggleLike(prompt.id, user.uid);
+            const result = await submitVote(prompt.id, newValue);
+            setCurrentVote(result.vote);
+            setScore(result.score);
         } catch {
-            setLiked(wasLiked);
-            setLikesCount((c) => c + (wasLiked ? 1 : -1));
+            setCurrentVote(prevVote);
+            setScore(prevScore);
         }
     }
 
@@ -100,16 +133,22 @@ export default function PromptDetail({ prompt, comments: initialComments }: Prom
                             <h1 className="font-serif text-3xl text-secondary-foreground font-medium mb-3">{prompt.title}</h1>
                             <div className="flex items-center gap-4">
                                 <Link href={`/profile/${prompt.author.username}`} className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-                                    <img src={prompt.author.avatar} className="w-6 h-6 rounded-full" alt={prompt.author.name} />
+                                    <img src={prompt.author.avatar} className="w-6 h-6 rounded-full" alt={prompt.author.name} loading="lazy" decoding="async" />
                                     <span className="text-sm font-medium text-secondary-foreground">{prompt.author.name}</span>
                                 </Link>
                                 <span className="w-1 h-1 rounded-full bg-muted"></span>
                                 <span className="text-xs text-secondary-foreground/60">{formatTimeAgo(prompt.createdAt)}</span>
                             </div>
                         </div>
-                        <div className="flex gap-2">
-                            <button onClick={handleLike} className={`w-10 h-10 flex items-center justify-center rounded-full transition-colors ${liked ? 'bg-primary text-primary-foreground' : 'bg-surface hover:bg-primary text-secondary-foreground hover:text-primary-foreground'}`}>
-                                <Iconify icon={liked ? 'solar:heart-bold' : 'solar:heart-linear'} width="20" />
+                        <div className="flex gap-2 items-center">
+                            <button onClick={() => handleVote(1)} className={`w-10 h-10 flex items-center justify-center rounded-full transition-colors ${currentVote === 1 ? 'bg-primary text-primary-foreground' : 'bg-surface hover:bg-primary text-secondary-foreground hover:text-primary-foreground'}`}>
+                                <Iconify icon={currentVote === 1 ? 'solar:alt-arrow-up-bold' : 'solar:alt-arrow-up-linear'} width="20" />
+                            </button>
+                            <span className={`text-sm font-medium min-w-[2rem] text-center ${score > 0 ? 'text-primary' : score < 0 ? 'text-red-500' : 'text-secondary-foreground/60'}`}>
+                                {formatCount(score)}
+                            </span>
+                            <button onClick={() => handleVote(-1)} className={`w-10 h-10 flex items-center justify-center rounded-full transition-colors ${currentVote === -1 ? 'bg-red-500 text-white' : 'bg-surface hover:bg-red-500 text-secondary-foreground hover:text-white'}`}>
+                                <Iconify icon={currentVote === -1 ? 'solar:alt-arrow-down-bold' : 'solar:alt-arrow-down-linear'} width="20" />
                             </button>
                             <button onClick={handleBookmark} className={`w-10 h-10 flex items-center justify-center rounded-full transition-colors ${bookmarked ? 'bg-primary text-primary-foreground' : 'bg-surface hover:bg-primary text-secondary-foreground hover:text-primary-foreground'}`}>
                                 <Iconify icon={bookmarked ? 'solar:bookmark-bold' : 'solar:bookmark-linear'} width="20" />
@@ -117,7 +156,7 @@ export default function PromptDetail({ prompt, comments: initialComments }: Prom
                         </div>
                     </div>
                     <div className="flex gap-4 mt-4 text-xs text-secondary-foreground/60">
-                        <span className="flex items-center gap-1"><Iconify icon="solar:heart-linear" width="14" /> {formatCount(likesCount)} likes</span>
+                        <span className="flex items-center gap-1"><Iconify icon="solar:graph-up-linear" width="14" /> {formatCount(score)} score</span>
                         <span className="flex items-center gap-1"><Iconify icon="solar:bookmark-linear" width="14" /> {formatCount(bookmarksCount)} saves</span>
                     </div>
                 </div>
@@ -144,7 +183,7 @@ export default function PromptDetail({ prompt, comments: initialComments }: Prom
                     <h3 className="font-serif text-lg text-secondary-foreground mb-4">Comments ({comments.length})</h3>
                     {user && (
                         <form onSubmit={handleComment} className="flex gap-3 mb-6">
-                            <img src={user.avatar} className="w-8 h-8 rounded-full flex-shrink-0" alt={user.name} />
+                            <img src={user.avatar} className="w-8 h-8 rounded-full flex-shrink-0" alt={user.name} loading="lazy" decoding="async" />
                             <div className="flex-1 flex gap-2">
                                 <input value={commentText} onChange={(e) => setCommentText(e.target.value)} placeholder="Add a comment..." className="flex-1 bg-surface border border-border rounded-lg px-4 py-2 text-sm text-secondary-foreground outline-none focus:border-primary transition-colors" />
                                 <button type="submit" disabled={!commentText.trim() || submitting} className="bg-primary text-primary-foreground text-sm px-4 py-2 rounded-lg font-medium disabled:opacity-50 hover:bg-primary/90 transition-colors">Post</button>
@@ -158,7 +197,7 @@ export default function PromptDetail({ prompt, comments: initialComments }: Prom
                             comments.map((comment) => (
                                 <div key={comment.id} className="flex gap-3">
                                     <Link href={`/profile/${comment.author.username}`}>
-                                        <img src={comment.author.avatar} className="w-8 h-8 rounded-full flex-shrink-0" alt={comment.author.name} />
+                                        <img src={comment.author.avatar} className="w-8 h-8 rounded-full flex-shrink-0" alt={comment.author.name} loading="lazy" decoding="async" />
                                     </Link>
                                     <div className="bg-surface p-3 rounded-lg rounded-tl-none w-full">
                                         <div className="flex justify-between items-baseline mb-1">

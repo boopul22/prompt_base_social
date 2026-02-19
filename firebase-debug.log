@@ -1,0 +1,111 @@
+[debug] [2026-02-19T09:12:39.556Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-02-19T09:12:39.557Z] > authorizing via signed-in user (bipul281b@gmail.com)
+[debug] [2026-02-19T09:12:39.557Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-02-19T09:12:39.557Z] > authorizing via signed-in user (bipul281b@gmail.com)
+[debug] [2026-02-19T09:12:39.557Z] Checked if tokens are valid: true, expires at: 1771494370284
+[debug] [2026-02-19T09:12:39.557Z] Checked if tokens are valid: true, expires at: 1771494370284
+[debug] [2026-02-19T09:12:39.557Z] Checked if tokens are valid: true, expires at: 1771494370284
+[debug] [2026-02-19T09:12:39.557Z] Checked if tokens are valid: true, expires at: 1771494370284
+[debug] [2026-02-19T09:12:39.557Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-02-19T09:12:39.557Z] > authorizing via signed-in user (bipul281b@gmail.com)
+[debug] [2026-02-19T09:12:39.557Z] Checked if tokens are valid: true, expires at: 1771494370284
+[debug] [2026-02-19T09:12:39.557Z] Checked if tokens are valid: true, expires at: 1771494370284
+[debug] [2026-02-19T09:12:39.558Z] >>> [apiv2][query] GET https://cloudbilling.googleapis.com/v1/projects/prompt-base-social/billingInfo [none]
+[debug] [2026-02-19T09:12:39.558Z] >>> [apiv2][query] GET https://cloudbilling.googleapis.com/v1/projects/prompt-base-social/billingInfo [none]
+[debug] [2026-02-19T09:12:39.558Z] >>> [apiv2][query] GET https://cloudbilling.googleapis.com/v1/projects/prompt-base-social/billingInfo [none]
+[debug] [2026-02-19T09:12:41.091Z] <<< [apiv2][status] GET https://cloudbilling.googleapis.com/v1/projects/prompt-base-social/billingInfo 200
+[debug] [2026-02-19T09:12:41.092Z] <<< [apiv2][body] GET https://cloudbilling.googleapis.com/v1/projects/prompt-base-social/billingInfo {"name":"projects/prompt-base-social/billingInfo","projectId":"prompt-base-social","billingAccountName":"billingAccounts/010D19-6407D2-EE2E58","billingEnabled":true}
+[debug] [2026-02-19T09:12:41.097Z] Checked if tokens are valid: true, expires at: 1771494370284
+[debug] [2026-02-19T09:12:41.097Z] Checked if tokens are valid: true, expires at: 1771494370284
+[debug] [2026-02-19T09:12:41.098Z] Checked if tokens are valid: true, expires at: 1771494370284
+[debug] [2026-02-19T09:12:41.098Z] Checked if tokens are valid: true, expires at: 1771494370284
+[debug] [2026-02-19T09:12:41.107Z] Checked if tokens are valid: true, expires at: 1771494370284
+[debug] [2026-02-19T09:12:41.107Z] Checked if tokens are valid: true, expires at: 1771494370284
+[debug] [2026-02-19T09:12:41.107Z] Checked if tokens are valid: true, expires at: 1771494370284
+[debug] [2026-02-19T09:12:41.107Z] Checked if tokens are valid: true, expires at: 1771494370284
+[debug] [2026-02-19T09:12:41.107Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/prompt-base-social/services/firebasedataconnect.googleapis.com [none]
+[debug] [2026-02-19T09:12:41.107Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/prompt-base-social/services/firebasedataconnect.googleapis.com  x-goog-user-project=prompt-base-social
+[debug] [2026-02-19T09:12:41.108Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/prompt-base-social/services/cloudfunctions.googleapis.com [none]
+[debug] [2026-02-19T09:12:41.108Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/prompt-base-social/services/cloudfunctions.googleapis.com  x-goog-user-project=prompt-base-social
+[debug] [2026-02-19T09:12:41.109Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/prompt-base-social/services/firebaseapphosting.googleapis.com [none]
+[debug] [2026-02-19T09:12:41.109Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/prompt-base-social/services/firebaseapphosting.googleapis.com  x-goog-user-project=prompt-base-social
+[debug] [2026-02-19T09:12:41.110Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/prompt-base-social/services/firebaseio.com [none]
+[debug] [2026-02-19T09:12:41.110Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/prompt-base-social/services/firebaseio.com  x-goog-user-project=prompt-base-social
+[debug] [2026-02-19T09:12:41.133Z] <<< [apiv2][status] GET https://cloudbilling.googleapis.com/v1/projects/prompt-base-social/billingInfo 200
+[debug] [2026-02-19T09:12:41.133Z] <<< [apiv2][body] GET https://cloudbilling.googleapis.com/v1/projects/prompt-base-social/billingInfo {"name":"projects/prompt-base-social/billingInfo","projectId":"prompt-base-social","billingAccountName":"billingAccounts/010D19-6407D2-EE2E58","billingEnabled":true}
+[debug] [2026-02-19T09:12:41.134Z] Checked if tokens are valid: true, expires at: 1771494370284
+[debug] [2026-02-19T09:12:41.134Z] Checked if tokens are valid: true, expires at: 1771494370284
+[debug] [2026-02-19T09:12:41.134Z] Checked if tokens are valid: true, expires at: 1771494370284
+[debug] [2026-02-19T09:12:41.134Z] Checked if tokens are valid: true, expires at: 1771494370284
+[debug] [2026-02-19T09:12:41.135Z] Checked if tokens are valid: true, expires at: 1771494370284
+[debug] [2026-02-19T09:12:41.135Z] Checked if tokens are valid: true, expires at: 1771494370284
+[debug] [2026-02-19T09:12:41.136Z] Checked if tokens are valid: true, expires at: 1771494370284
+[debug] [2026-02-19T09:12:41.136Z] Checked if tokens are valid: true, expires at: 1771494370284
+[debug] [2026-02-19T09:12:41.136Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/prompt-base-social/services/firebasedataconnect.googleapis.com [none]
+[debug] [2026-02-19T09:12:41.136Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/prompt-base-social/services/firebasedataconnect.googleapis.com  x-goog-user-project=prompt-base-social
+[debug] [2026-02-19T09:12:41.136Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/prompt-base-social/services/cloudfunctions.googleapis.com [none]
+[debug] [2026-02-19T09:12:41.136Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/prompt-base-social/services/cloudfunctions.googleapis.com  x-goog-user-project=prompt-base-social
+[debug] [2026-02-19T09:12:41.137Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/prompt-base-social/services/firebaseapphosting.googleapis.com [none]
+[debug] [2026-02-19T09:12:41.137Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/prompt-base-social/services/firebaseapphosting.googleapis.com  x-goog-user-project=prompt-base-social
+[debug] [2026-02-19T09:12:41.137Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/prompt-base-social/services/firebaseio.com [none]
+[debug] [2026-02-19T09:12:41.137Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/prompt-base-social/services/firebaseio.com  x-goog-user-project=prompt-base-social
+[debug] [2026-02-19T09:12:41.142Z] <<< [apiv2][status] GET https://cloudbilling.googleapis.com/v1/projects/prompt-base-social/billingInfo 200
+[debug] [2026-02-19T09:12:41.142Z] <<< [apiv2][body] GET https://cloudbilling.googleapis.com/v1/projects/prompt-base-social/billingInfo {"name":"projects/prompt-base-social/billingInfo","projectId":"prompt-base-social","billingAccountName":"billingAccounts/010D19-6407D2-EE2E58","billingEnabled":true}
+[debug] [2026-02-19T09:12:41.143Z] Checked if tokens are valid: true, expires at: 1771494370284
+[debug] [2026-02-19T09:12:41.143Z] Checked if tokens are valid: true, expires at: 1771494370284
+[debug] [2026-02-19T09:12:41.143Z] Checked if tokens are valid: true, expires at: 1771494370284
+[debug] [2026-02-19T09:12:41.143Z] Checked if tokens are valid: true, expires at: 1771494370284
+[debug] [2026-02-19T09:12:41.144Z] Checked if tokens are valid: true, expires at: 1771494370284
+[debug] [2026-02-19T09:12:41.144Z] Checked if tokens are valid: true, expires at: 1771494370284
+[debug] [2026-02-19T09:12:41.144Z] Checked if tokens are valid: true, expires at: 1771494370284
+[debug] [2026-02-19T09:12:41.144Z] Checked if tokens are valid: true, expires at: 1771494370284
+[debug] [2026-02-19T09:12:41.144Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/prompt-base-social/services/firebasedataconnect.googleapis.com [none]
+[debug] [2026-02-19T09:12:41.144Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/prompt-base-social/services/firebasedataconnect.googleapis.com  x-goog-user-project=prompt-base-social
+[debug] [2026-02-19T09:12:41.145Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/prompt-base-social/services/cloudfunctions.googleapis.com [none]
+[debug] [2026-02-19T09:12:41.145Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/prompt-base-social/services/cloudfunctions.googleapis.com  x-goog-user-project=prompt-base-social
+[debug] [2026-02-19T09:12:41.145Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/prompt-base-social/services/firebaseapphosting.googleapis.com [none]
+[debug] [2026-02-19T09:12:41.145Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/prompt-base-social/services/firebaseapphosting.googleapis.com  x-goog-user-project=prompt-base-social
+[debug] [2026-02-19T09:12:41.145Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/prompt-base-social/services/firebaseio.com [none]
+[debug] [2026-02-19T09:12:41.145Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/prompt-base-social/services/firebaseio.com  x-goog-user-project=prompt-base-social
+[debug] [2026-02-19T09:12:42.957Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/prompt-base-social/services/firebaseapphosting.googleapis.com 200
+[debug] [2026-02-19T09:12:42.957Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/prompt-base-social/services/firebaseapphosting.googleapis.com [omitted]
+[debug] [2026-02-19T09:12:42.959Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/prompt-base-social/services/firebaseapphosting.googleapis.com 200
+[debug] [2026-02-19T09:12:42.960Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/prompt-base-social/services/firebaseapphosting.googleapis.com [omitted]
+[debug] [2026-02-19T09:12:42.979Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/prompt-base-social/services/cloudfunctions.googleapis.com 200
+[debug] [2026-02-19T09:12:42.979Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/prompt-base-social/services/cloudfunctions.googleapis.com [omitted]
+[debug] [2026-02-19T09:12:42.990Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/prompt-base-social/services/firebasedataconnect.googleapis.com 200
+[debug] [2026-02-19T09:12:42.990Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/prompt-base-social/services/firebasedataconnect.googleapis.com [omitted]
+[debug] [2026-02-19T09:12:43.008Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/prompt-base-social/services/firebaseapphosting.googleapis.com 200
+[debug] [2026-02-19T09:12:43.008Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/prompt-base-social/services/firebaseapphosting.googleapis.com [omitted]
+[debug] [2026-02-19T09:12:43.009Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/prompt-base-social/services/firebaseio.com 403
+[debug] [2026-02-19T09:12:43.010Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/prompt-base-social/services/firebaseio.com [omitted]
+[debug] [2026-02-19T09:12:43.014Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/prompt-base-social/services/firebaseio.com 403
+[debug] [2026-02-19T09:12:43.015Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/prompt-base-social/services/firebaseio.com [omitted]
+[debug] [2026-02-19T09:12:43.063Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/prompt-base-social/services/firebasedataconnect.googleapis.com 200
+[debug] [2026-02-19T09:12:43.064Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/prompt-base-social/services/firebasedataconnect.googleapis.com [omitted]
+[debug] [2026-02-19T09:12:43.069Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/prompt-base-social/services/firebasedataconnect.googleapis.com 200
+[debug] [2026-02-19T09:12:43.069Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/prompt-base-social/services/firebasedataconnect.googleapis.com [omitted]
+[debug] [2026-02-19T09:12:43.143Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/prompt-base-social/services/firebaseio.com 403
+[debug] [2026-02-19T09:12:43.144Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/prompt-base-social/services/firebaseio.com [omitted]
+[debug] [2026-02-19T09:12:43.246Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/prompt-base-social/services/cloudfunctions.googleapis.com 200
+[debug] [2026-02-19T09:12:43.246Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/prompt-base-social/services/cloudfunctions.googleapis.com [omitted]
+[debug] [2026-02-19T09:12:43.308Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/prompt-base-social/services/cloudfunctions.googleapis.com 200
+[debug] [2026-02-19T09:12:43.308Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/prompt-base-social/services/cloudfunctions.googleapis.com [omitted]
+[debug] [2026-02-19T09:12:43.349Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-02-19T09:12:43.349Z] > authorizing via signed-in user (bipul281b@gmail.com)
+[debug] [2026-02-19T09:12:43.349Z] Checked if tokens are valid: true, expires at: 1771494370284
+[debug] [2026-02-19T09:12:43.349Z] Checked if tokens are valid: true, expires at: 1771494370284
+[debug] [2026-02-19T09:12:43.349Z] >>> [apiv2][query] GET https://cloudbilling.googleapis.com/v1/projects/prompt-base-social/billingInfo [none]
+[debug] [2026-02-19T09:12:43.404Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-02-19T09:12:43.404Z] > authorizing via signed-in user (bipul281b@gmail.com)
+[debug] [2026-02-19T09:12:43.404Z] Checked if tokens are valid: true, expires at: 1771494370284
+[debug] [2026-02-19T09:12:43.404Z] Checked if tokens are valid: true, expires at: 1771494370284
+[debug] [2026-02-19T09:12:43.404Z] >>> [apiv2][query] GET https://cloudbilling.googleapis.com/v1/projects/prompt-base-social/billingInfo [none]
+[debug] [2026-02-19T09:12:44.737Z] <<< [apiv2][status] GET https://cloudbilling.googleapis.com/v1/projects/prompt-base-social/billingInfo 200
+[debug] [2026-02-19T09:12:44.737Z] <<< [apiv2][body] GET https://cloudbilling.googleapis.com/v1/projects/prompt-base-social/billingInfo {"name":"projects/prompt-base-social/billingInfo","projectId":"prompt-base-social","billingAccountName":"billingAccounts/010D19-6407D2-EE2E58","billingEnabled":true}
+[debug] [2026-02-19T09:12:44.740Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-02-19T09:12:44.740Z] > authorizing via signed-in user (bipul281b@gmail.com)
+[debug] [2026-02-19T09:12:44.842Z] <<< [apiv2][status] GET https://cloudbilling.googleapis.com/v1/projects/prompt-base-social/billingInfo 200
+[debug] [2026-02-19T09:12:44.842Z] <<< [apiv2][body] GET https://cloudbilling.googleapis.com/v1/projects/prompt-base-social/billingInfo {"name":"projects/prompt-base-social/billingInfo","projectId":"prompt-base-social","billingAccountName":"billingAccounts/010D19-6407D2-EE2E58","billingEnabled":true}
+[debug] [2026-02-19T09:12:44.844Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-02-19T09:12:44.844Z] > authorizing via signed-in user (bipul281b@gmail.com)

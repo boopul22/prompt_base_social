@@ -34,6 +34,9 @@ export interface Prompt {
   tags: string[];
   author: AuthorEmbed;
   likesCount: number;
+  upvotesCount: number;
+  downvotesCount: number;
+  score: number;
   bookmarksCount: number;
   commentsCount: number;
   isPublic: boolean;
@@ -62,7 +65,7 @@ export interface Category {
 export interface Notification {
   id: string;
   recipientUid: string;
-  type: 'like' | 'comment' | 'bookmark' | 'featured';
+  type: 'like' | 'comment' | 'bookmark' | 'featured' | 'upvote';
   actorUid: string;
   actor: AuthorEmbed;
   promptId?: string;

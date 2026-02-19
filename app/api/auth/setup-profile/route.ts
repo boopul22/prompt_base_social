@@ -4,22 +4,7 @@ import { cookies } from 'next/headers';
 import { FieldValue } from 'firebase-admin/firestore';
 
 export async function POST(req: NextRequest) {
-  // Verify session
-  const cookieStore = await cookies();
-  const sessionCookie = cookieStore.get('session')?.value;
-  if (!sessionCookie) {
-    return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
-  }
-
-  let uid: string;
-  try {
-    const decoded = await adminAuth.verifySessionCookie(sessionCookie);
-    uid = decoded.uid;
-  } catch {
-    return NextResponse.json({ error: 'Invalid session' }, { status: 401 });
-  }
-
-  const { username, name } = await req.json();
+  const { username, name, idToken } = await req.json();
 
   // Validate
   if (!username || !name) {
@@ -30,6 +15,34 @@ export async function POST(req: NextRequest) {
       { error: 'Username must be 3-30 chars, lowercase alphanumeric and hyphens' },
       { status: 400 }
     );
+  }
+
+  // Verify user via session cookie or ID token fallback
+  const cookieStore = await cookies();
+  const sessionCookie = cookieStore.get('session')?.value;
+  let uid: string;
+  if (sessionCookie) {
+    try {
+      const decoded = await adminAuth.verifySessionCookie(sessionCookie);
+      uid = decoded.uid;
+    } catch {
+      uid = '';
+    }
+  } else {
+    uid = '';
+  }
+
+  if (!uid && idToken) {
+    try {
+      const decoded = await adminAuth.verifyIdToken(idToken);
+      uid = decoded.uid;
+    } catch {
+      uid = '';
+    }
+  }
+
+  if (!uid) {
+    return NextResponse.json({ error: 'Invalid session' }, { status: 401 });
   }
 
   // Atomic username claim + profile creation

@@ -1,43 +1,47 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import Iconify from './ui/Iconify';
 import CopyButton from './ui/CopyButton';
 import { Prompt } from '@/lib/types';
 import { formatCount, formatTimeAgo } from '@/lib/utils/format';
 import { useAuth } from '@/contexts/AuthContext';
-import { toggleLike, checkIfLiked, toggleBookmark, checkIfBookmarked } from '@/lib/firebase/firestore';
+import { submitVote, toggleBookmark } from '@/lib/firebase/firestore';
 
 interface FeedCardProps {
     prompt: Prompt;
+    initialVote?: 1 | -1 | 0;
+    initialBookmarked?: boolean;
 }
 
-export default function FeedCard({ prompt }: FeedCardProps) {
+export default function FeedCard({ prompt, initialVote, initialBookmarked }: FeedCardProps) {
     const { isFeatured, author, createdAt, model, title, description, tags, id, promptText } = prompt;
     const { user } = useAuth();
-    const [liked, setLiked] = useState(false);
-    const [bookmarked, setBookmarked] = useState(false);
-    const [likesCount, setLikesCount] = useState(prompt.likesCount);
+    const [currentVote, setCurrentVote] = useState<1 | -1 | 0>(initialVote ?? 0);
+    const [score, setScore] = useState(prompt.score);
+    const [bookmarked, setBookmarked] = useState(initialBookmarked ?? false);
     const [bookmarksCount, setBookmarksCount] = useState(prompt.bookmarksCount);
 
-    useEffect(() => {
-        if (user) {
-            checkIfLiked(id, user.uid).then(setLiked);
-            checkIfBookmarked(id, user.uid).then(setBookmarked);
-        }
-    }, [id, user]);
-
-    async function handleLike() {
+    async function handleVote(value: 1 | -1) {
         if (!user) return;
-        const wasLiked = liked;
-        setLiked(!wasLiked);
-        setLikesCount((c) => c + (wasLiked ? -1 : 1));
+        const prevVote = currentVote;
+        const prevScore = score;
+
+        // Determine effective new value (toggle off if clicking same arrow)
+        const newValue: 1 | -1 | 0 = currentVote === value ? 0 : value;
+
+        // Optimistic update
+        setCurrentVote(newValue);
+        setScore((s) => s - prevVote + newValue);
+
         try {
-            await toggleLike(id, user.uid);
+            const result = await submitVote(id, newValue);
+            setCurrentVote(result.vote);
+            setScore(result.score);
         } catch {
-            setLiked(wasLiked);
-            setLikesCount((c) => c + (wasLiked ? 1 : -1));
+            setCurrentVote(prevVote);
+            setScore(prevScore);
         }
     }
 
@@ -67,7 +71,7 @@ export default function FeedCard({ prompt }: FeedCardProps) {
             <div className={`flex justify-between items-start ${isFeatured ? 'mt-2' : ''} mb-3`}>
                 <div className="flex items-center gap-3">
                     <Link href={`/profile/${author.username}`}>
-                        <img src={author.avatar} className={`w-10 h-10 rounded-full ${isFeatured ? 'border-2 border-foreground/30 shadow-sm' : 'border border-border'}`} alt={author.name} />
+                        <img src={author.avatar} className={`w-10 h-10 rounded-full ${isFeatured ? 'border-2 border-foreground/30 shadow-sm' : 'border border-border'}`} alt={author.name} loading="lazy" decoding="async" />
                     </Link>
                     <div>
                         <Link href={`/profile/${author.username}`} className="text-sm font-medium text-secondary-foreground leading-tight hover:text-primary transition-colors">
@@ -95,13 +99,26 @@ export default function FeedCard({ prompt }: FeedCardProps) {
             )}
 
             <div className="flex items-center justify-between pt-4 border-t border-border-subtle">
-                <div className="flex gap-4">
-                    <button
-                        onClick={handleLike}
-                        className={`flex items-center gap-1.5 text-xs font-medium group/btn transition-colors ${liked ? 'text-primary' : 'text-secondary-foreground hover:text-primary'}`}
-                    >
-                        <Iconify icon={liked ? 'solar:heart-bold' : 'solar:heart-linear'} width="16" className="group-hover/btn:scale-110 transition-transform" /> {formatCount(likesCount)}
-                    </button>
+                <div className="flex gap-4 items-center">
+                    <div className="flex items-center gap-0.5">
+                        <button
+                            onClick={() => handleVote(1)}
+                            className={`flex items-center justify-center w-7 h-7 rounded transition-colors ${currentVote === 1 ? 'text-primary' : 'text-secondary-foreground/60 hover:text-primary'}`}
+                            aria-label="Upvote"
+                        >
+                            <Iconify icon={currentVote === 1 ? 'solar:alt-arrow-up-bold' : 'solar:alt-arrow-up-linear'} width="18" />
+                        </button>
+                        <span className={`text-xs font-medium min-w-[1.5rem] text-center ${score > 0 ? 'text-primary' : score < 0 ? 'text-red-500' : 'text-secondary-foreground/60'}`}>
+                            {formatCount(score)}
+                        </span>
+                        <button
+                            onClick={() => handleVote(-1)}
+                            className={`flex items-center justify-center w-7 h-7 rounded transition-colors ${currentVote === -1 ? 'text-red-500' : 'text-secondary-foreground/60 hover:text-red-500'}`}
+                            aria-label="Downvote"
+                        >
+                            <Iconify icon={currentVote === -1 ? 'solar:alt-arrow-down-bold' : 'solar:alt-arrow-down-linear'} width="18" />
+                        </button>
+                    </div>
                     <button
                         onClick={handleBookmark}
                         className={`flex items-center gap-1.5 text-xs font-medium group/btn transition-colors ${bookmarked ? 'text-primary' : 'text-secondary-foreground hover:text-primary'}`}

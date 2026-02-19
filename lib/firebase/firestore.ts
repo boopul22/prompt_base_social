@@ -35,6 +35,21 @@ export async function checkIfLiked(promptId: string, uid: string): Promise<boole
   return snap.exists();
 }
 
+// ── Vote ──
+
+export async function submitVote(
+  promptId: string,
+  value: 1 | -1 | 0
+): Promise<{ vote: 1 | -1 | 0; score: number; upvotesCount: number; downvotesCount: number }> {
+  const res = await fetch(`/api/prompts/${promptId}/vote`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ value }),
+  });
+  if (!res.ok) throw new Error('Failed to submit vote');
+  return res.json();
+}
+
 // ── Bookmark toggle ──
 // Uses API route because it also needs to update the userBookmarks reverse index
 

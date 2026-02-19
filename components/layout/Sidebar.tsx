@@ -13,9 +13,8 @@ export default function Sidebar() {
     const [searchQuery, setSearchQuery] = useState('');
 
     const sortOptions = [
-        { value: 'trending', label: 'Trending', icon: 'solar:flame-linear' },
+        { value: 'trending', label: 'Top', icon: 'solar:graph-up-linear' },
         { value: 'newest', label: 'Newest', icon: 'solar:clock-circle-linear' },
-        { value: 'liked', label: 'Most Liked', icon: 'solar:heart-linear' },
     ];
 
     const categoryOptions = [

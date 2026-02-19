@@ -23,12 +23,11 @@ export async function getPromptsFeed(options?: {
       query = query.where('category', '==', options.category);
     }
 
-    if (options?.sort === 'liked') {
-      query = query.orderBy('likesCount', 'desc');
-    } else if (options?.sort === 'newest') {
+    if (options?.sort === 'newest') {
       query = query.orderBy('createdAt', 'desc');
     } else {
-      query = query.orderBy('likesCount', 'desc');
+      // 'trending', 'liked', or default — sort by score
+      query = query.orderBy('score', 'desc');
     }
 
     query = query.limit(lim);
@@ -50,7 +49,7 @@ export async function getPromptsFeed(options?: {
       if (options?.sort === 'newest') {
         prompts.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
       } else {
-        prompts.sort((a, b) => b.likesCount - a.likesCount);
+        prompts.sort((a, b) => b.score - a.score);
       }
       if (options?.category) {
         return prompts.filter((p) => p.category === options.category);
@@ -89,6 +88,8 @@ export async function getPromptsByUser(uid: string): Promise<Prompt[]> {
 
 function docToPrompt(doc: FirebaseFirestore.DocumentSnapshot): Prompt {
   const d = doc.data()!;
+  const upvotesCount = d.upvotesCount ?? d.likesCount ?? 0;
+  const downvotesCount = d.downvotesCount ?? 0;
   return {
     id: doc.id,
     title: d.title,
@@ -98,7 +99,10 @@ function docToPrompt(doc: FirebaseFirestore.DocumentSnapshot): Prompt {
     category: d.category,
     tags: d.tags || [],
     author: d.author,
-    likesCount: d.likesCount || 0,
+    likesCount: upvotesCount,
+    upvotesCount,
+    downvotesCount,
+    score: d.score ?? (upvotesCount - downvotesCount),
     bookmarksCount: d.bookmarksCount || 0,
     commentsCount: d.commentsCount || 0,
     isPublic: d.isPublic ?? true,
@@ -248,11 +252,41 @@ export async function getUserBookmarks(uid: string): Promise<Prompt[]> {
     }
   }
 
-  const prompts: Prompt[] = [];
-  for (const bookmarkDoc of snapshot.docs) {
-    const promptId = bookmarkDoc.data().promptId;
-    const prompt = await getPromptById(promptId);
-    if (prompt) prompts.push(prompt);
+  const bookmarkPromptIds = snapshot.docs
+    .map((bookmarkDoc) => bookmarkDoc.data().promptId)
+    .filter((promptId): promptId is string => typeof promptId === 'string' && promptId.length > 0);
+
+  const uniquePromptIds = [...new Set(bookmarkPromptIds)];
+  if (uniquePromptIds.length === 0) {
+    return [];
   }
+
+  const refs = uniquePromptIds.map((promptId) => adminDb.collection('prompts').doc(promptId));
+  const chunkSize = 100;
+  const chunkPromises: Promise<FirebaseFirestore.DocumentSnapshot[]>[] = [];
+
+  for (let i = 0; i < refs.length; i += chunkSize) {
+    chunkPromises.push(adminDb.getAll(...refs.slice(i, i + chunkSize)));
+  }
+
+  const docsById = new Map<string, Prompt>();
+  const chunkedDocs = await Promise.all(chunkPromises);
+
+  for (const docs of chunkedDocs) {
+    for (const doc of docs) {
+      if (doc.exists) {
+        docsById.set(doc.id, docToPrompt(doc));
+      }
+    }
+  }
+
+  const prompts: Prompt[] = [];
+  for (const promptId of bookmarkPromptIds) {
+    const prompt = docsById.get(promptId);
+    if (prompt) {
+      prompts.push(prompt);
+    }
+  }
+
   return prompts;
 }

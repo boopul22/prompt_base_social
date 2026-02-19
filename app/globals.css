@@ -6,41 +6,59 @@
      ============================================= */
 
   /* FOUNDATIONS - Page-level canvas and text */
-  --color-background: #0F1923;          /* Deep Ocean Ink */
-  --color-foreground: #E8ECF0;          /* Silver Mist */
+  --color-background: #0F1923;
+  /* Deep Ocean Ink */
+  --color-foreground: #E8ECF0;
+  /* Silver Mist */
 
   /* PRIMARY - Buttons, CTAs, brand identity */
-  --color-primary: #F5A623;             /* Warm Amber */
-  --color-primary-foreground: #0F1923;  /* Dark on Amber */
+  --color-primary: #F5A623;
+  /* Warm Amber */
+  --color-primary-foreground: #0F1923;
+  /* Dark on Amber */
 
   /* SECONDARY - Cards, containers, elevated panels */
-  --color-secondary: #1A2A38;           /* Slate Harbor */
-  --color-secondary-foreground: #D1D9E0;/* Pale Steel */
+  --color-secondary: #1A2A38;
+  /* Slate Harbor */
+  --color-secondary-foreground: #D1D9E0;
+  /* Pale Steel */
 
   /* MUTED - Placeholders, disabled states, de-emphasized text */
-  --color-muted: #5A6E7F;              /* Storm Gray */
-  --color-muted-foreground: #8A9AAA;   /* Haze Blue */
+  --color-muted: #5A6E7F;
+  /* Storm Gray */
+  --color-muted-foreground: #8A9AAA;
+  /* Haze Blue */
 
   /* ACCENT - Decorative highlights, secondary actions, tags */
-  --color-accent: #2ECDA7;             /* Ocean Teal */
-  --color-accent-foreground: #0F1923;  /* Dark on Teal */
+  --color-accent: #2ECDA7;
+  /* Ocean Teal */
+  --color-accent-foreground: #0F1923;
+  /* Dark on Teal */
 
   /* SURFACE - Depth/elevation layers */
-  --color-surface: #152230;            /* Deep Current (level 1) */
-  --color-surface-elevated: #1E3244;   /* Harbor Blue (level 2) */
+  --color-surface: #152230;
+  /* Deep Current (level 1) */
+  --color-surface-elevated: #1E3244;
+  /* Harbor Blue (level 2) */
 
   /* BORDER - Structural delineation */
-  --color-border: #2A3D4E;             /* Tide Line */
-  --color-border-subtle: #1E3040;      /* Deep Border */
+  --color-border: #2A3D4E;
+  /* Tide Line */
+  --color-border-subtle: #1E3040;
+  /* Deep Border */
 
   /* SEMANTIC - Success, Warning, Error, Info */
-  --color-success: #34D399;            /* Emerald Glow */
+  --color-success: #34D399;
+  /* Emerald Glow */
   --color-success-foreground: #0F1923;
-  --color-warning: #FBBF24;            /* Sunbeam Yellow */
+  --color-warning: #FBBF24;
+  /* Sunbeam Yellow */
   --color-warning-foreground: #0F1923;
-  --color-error: #F87171;              /* Coral Alert */
+  --color-error: #F87171;
+  /* Coral Alert */
   --color-error-foreground: #0F1923;
-  --color-info: #60A5FA;               /* Sky Signal */
+  --color-info: #60A5FA;
+  /* Sky Signal */
   --color-info-foreground: #0F1923;
 
   /* Font Variables (mapped from layout.tsx) */
@@ -115,4 +133,130 @@ body {
   background-color: var(--color-background);
   color: var(--color-foreground);
   font-family: var(--font-sans);
+}
+
+/* ==============================
+   Auth Flow Styles
+   ============================== */
+
+/* Entry animation for auth forms */
+@keyframes authFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes authSlideLeft {
+  from {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes authSlideRight {
+  from {
+    opacity: 0;
+    transform: translateX(-24px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes pulseGlow {
+
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(245, 166, 35, 0);
+  }
+
+  50% {
+    box-shadow: 0 0 0 4px rgba(245, 166, 35, 0.15);
+  }
+}
+
+.auth-form-enter {
+  animation: authFadeIn 0.5s ease-out;
+}
+
+.auth-step-forward {
+  animation: authSlideLeft 0.35s ease-out;
+}
+
+.auth-step-backward {
+  animation: authSlideRight 0.35s ease-out;
+}
+
+/* Branding panel gradient */
+.auth-brand-panel {
+  background: linear-gradient(160deg, #1a2a38 0%, #0f1923 40%, #152230 100%);
+}
+
+.auth-brand-gradient {
+  background: linear-gradient(160deg,
+      rgba(245, 166, 35, 0.08) 0%,
+      rgba(46, 205, 167, 0.06) 50%,
+      rgba(15, 25, 35, 0) 100%);
+}
+
+/* Input focus glow */
+.auth-input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(245, 166, 35, 0.12);
+}
+
+/* Password strength meter */
+.strength-meter {
+  height: 3px;
+  border-radius: 2px;
+  transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+.strength-weak {
+  width: 33%;
+  background-color: var(--color-error);
+}
+
+.strength-fair {
+  width: 66%;
+  background-color: var(--color-warning);
+}
+
+.strength-strong {
+  width: 100%;
+  background-color: var(--color-success);
+}
+
+/* Error banner */
+.auth-error {
+  animation: authFadeIn 0.25s ease-out;
+}
+
+/* Spinner */
+@keyframes authSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.auth-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid transparent;
+  border-top-color: currentColor;
+  border-radius: 50%;
+  animation: authSpin 0.6s linear infinite;
 }

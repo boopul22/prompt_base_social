@@ -1,8 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useCallback, useState } from 'react';
 import Link from 'next/link';
 import Iconify from './ui/Iconify';
+import EditProfileModal from './EditProfileModal';
 import { User, Prompt } from '@/lib/types';
 import { formatCount, formatTimeAgo } from '@/lib/utils/format';
 import { useAuth } from '@/contexts/AuthContext';
@@ -14,20 +15,26 @@ interface UserProfileProps {
 
 export default function UserProfile({ user, prompts }: UserProfileProps) {
     const { user: currentUser } = useAuth();
+    const [profileData, setProfileData] = useState(user);
     const [activeTab, setActiveTab] = useState<'my' | 'saved'>('my');
     const [savedPrompts, setSavedPrompts] = useState<Prompt[]>([]);
     const [loadingSaved, setLoadingSaved] = useState(false);
+    const [savedLoaded, setSavedLoaded] = useState(false);
+    const [editOpen, setEditOpen] = useState(false);
     const isOwnProfile = currentUser?.uid === user.uid;
 
-    useEffect(() => {
-        if (activeTab === 'saved' && isOwnProfile && savedPrompts.length === 0) {
-            setLoadingSaved(true);
-            fetch(`/api/users/${user.username}/saved`)
-                .then((r) => r.ok ? r.json() : { prompts: [] })
-                .then((data) => setSavedPrompts(data.prompts || []))
-                .finally(() => setLoadingSaved(false));
+    const loadSavedPrompts = useCallback(async () => {
+        if (!isOwnProfile || loadingSaved || savedLoaded) return;
+        setLoadingSaved(true);
+        try {
+            const res = await fetch(`/api/users/${user.username}/saved`);
+            const data = res.ok ? await res.json() : { prompts: [] };
+            setSavedPrompts(data.prompts || []);
+            setSavedLoaded(true);
+        } finally {
+            setLoadingSaved(false);
         }
-    }, [activeTab, isOwnProfile, user.username, savedPrompts.length]);
+    }, [isOwnProfile, loadingSaved, savedLoaded, user.username]);
 
     return (
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -36,19 +43,19 @@ export default function UserProfile({ user, prompts }: UserProfileProps) {
 
                 <div className="flex flex-col md:flex-row items-center md:items-start gap-8 relative z-10">
                     <div className="w-32 h-32 rounded-full border-4 border-foreground/25 shadow-lg overflow-hidden flex-shrink-0">
-                        <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
+                        <img src={profileData.avatar} alt={profileData.name} className="w-full h-full object-cover" loading="lazy" decoding="async" />
                     </div>
 
                     <div className="text-center md:text-left flex-1">
-                        <h1 className="font-serif text-3xl font-medium text-secondary-foreground mb-1">{user.name}</h1>
-                        <p className="text-sm text-secondary-foreground/50 mb-3">@{user.username}</p>
-                        {user.bio && (
-                            <p className="text-secondary-foreground/70 max-w-lg mb-6">{user.bio}</p>
+                        <h1 className="font-serif text-3xl font-medium text-secondary-foreground mb-1">{profileData.name}</h1>
+                        <p className="text-sm text-secondary-foreground/50 mb-3">@{profileData.username}</p>
+                        {profileData.bio && (
+                            <p className="text-secondary-foreground/70 max-w-lg mb-6">{profileData.bio}</p>
                         )}
 
-                        {user.categories && user.categories.length > 0 && (
+                        {profileData.categories && profileData.categories.length > 0 && (
                             <div className="flex flex-wrap justify-center md:justify-start gap-2 mb-6">
-                                {user.categories.map((cat) => (
+                                {profileData.categories.map((cat) => (
                                     <span key={cat} className="px-3 py-1 rounded-md border border-border text-secondary-foreground text-xs">{cat}</span>
                                 ))}
                             </div>
@@ -56,15 +63,15 @@ export default function UserProfile({ user, prompts }: UserProfileProps) {
 
                         <div className="flex justify-center md:justify-start gap-8 border-t border-border-subtle pt-6">
                             <div>
-                                <span className="block text-2xl font-serif font-medium text-secondary-foreground">{user.stats.prompts}</span>
+                                <span className="block text-2xl font-serif font-medium text-secondary-foreground">{profileData.stats.prompts}</span>
                                 <span className="text-xs text-secondary-foreground/50 uppercase tracking-wider">Prompts</span>
                             </div>
                             <div>
-                                <span className="block text-2xl font-serif font-medium text-secondary-foreground">{formatCount(user.stats.likes)}</span>
-                                <span className="text-xs text-secondary-foreground/50 uppercase tracking-wider">Likes</span>
+                                <span className="block text-2xl font-serif font-medium text-secondary-foreground">{formatCount(profileData.stats.likes)}</span>
+                                <span className="text-xs text-secondary-foreground/50 uppercase tracking-wider">Upvotes</span>
                             </div>
                             <div>
-                                <span className="block text-2xl font-serif font-medium text-secondary-foreground">{user.stats.saved}</span>
+                                <span className="block text-2xl font-serif font-medium text-secondary-foreground">{profileData.stats.saved}</span>
                                 <span className="text-xs text-secondary-foreground/50 uppercase tracking-wider">Saved</span>
                             </div>
                         </div>
@@ -72,7 +79,7 @@ export default function UserProfile({ user, prompts }: UserProfileProps) {
 
                     {isOwnProfile && (
                         <div className="flex gap-3">
-                            <button className="bg-primary text-primary-foreground px-6 py-2 rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors shadow-sm">Edit Profile</button>
+                            <button onClick={() => setEditOpen(true)} className="bg-primary text-primary-foreground px-6 py-2 rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors shadow-sm">Edit Profile</button>
                             <button className="bg-surface-elevated border border-border text-secondary-foreground px-4 py-2 rounded-lg hover:border-muted transition-colors">
                                 <Iconify icon="solar:settings-linear" width="20" />
                             </button>
@@ -90,7 +97,10 @@ export default function UserProfile({ user, prompts }: UserProfileProps) {
                     </button>
                     {isOwnProfile && (
                         <button
-                            onClick={() => setActiveTab('saved')}
+                            onClick={() => {
+                                setActiveTab('saved');
+                                void loadSavedPrompts();
+                            }}
                             className={`pb-3 border-b-2 font-medium text-sm transition-colors ${activeTab === 'saved' ? 'border-primary text-primary' : 'border-transparent text-secondary-foreground/50 hover:text-secondary-foreground'}`}
                         >
                             Saved Prompts
@@ -118,7 +128,7 @@ export default function UserProfile({ user, prompts }: UserProfileProps) {
                                 <h3 className="font-serif text-lg text-secondary-foreground font-medium mb-2 group-hover:text-primary transition-colors">{prompt.title}</h3>
                                 <p className="text-secondary-foreground/70 text-sm mb-4 line-clamp-2">{prompt.description}</p>
                                 <div className="flex items-center gap-4 text-secondary-foreground/60 text-xs">
-                                    <span className="flex items-center gap-1"><Iconify icon="solar:heart-linear" /> {formatCount(prompt.likesCount)}</span>
+                                    <span className="flex items-center gap-1"><Iconify icon="solar:graph-up-linear" /> {formatCount(prompt.score)}</span>
                                     <span className="flex items-center gap-1"><Iconify icon="solar:bookmark-linear" /> {formatCount(prompt.bookmarksCount)}</span>
                                 </div>
                             </article>
@@ -126,6 +136,17 @@ export default function UserProfile({ user, prompts }: UserProfileProps) {
                     ))}
                 </div>
             </div>
+
+            {editOpen && (
+                <EditProfileModal
+                    user={profileData}
+                    onClose={() => setEditOpen(false)}
+                    onSaved={(updated) => {
+                        setProfileData(updated);
+                        setEditOpen(false);
+                    }}
+                />
+            )}
         </section>
     );
 }

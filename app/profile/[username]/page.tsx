@@ -2,6 +2,8 @@ import { notFound } from 'next/navigation';
 import UserProfile from '@/components/UserProfile';
 import { getUserByUsername, getPromptsByUser } from '@/lib/firebase/firestore-admin';
 
+export const dynamic = 'force-dynamic';
+
 interface ProfilePageProps {
     params: Promise<{ username: string }>;
 }

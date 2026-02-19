@@ -84,7 +84,7 @@ export default function Navbar() {
                                         onClick={() => setShowMenu(!showMenu)}
                                         className="w-9 h-9 rounded-full bg-surface border border-border overflow-hidden"
                                     >
-                                        <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
+                                        <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" loading="lazy" decoding="async" />
                                     </button>
                                     {showMenu && (
                                         <div className="absolute right-0 mt-2 w-48 bg-secondary border border-border rounded-lg shadow-lg py-1 z-50">

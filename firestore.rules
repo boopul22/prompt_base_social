@@ -37,14 +37,20 @@ service cloud.firestore {
       allow update: if isAuth() && (
         resource.data.author.uid == request.auth.uid ||
         request.resource.data.diff(resource.data).affectedKeys()
-          .hasOnly(['likesCount', 'bookmarksCount', 'commentsCount'])
+          .hasOnly(['likesCount', 'bookmarksCount', 'commentsCount', 'upvotesCount', 'downvotesCount', 'score'])
       );
       allow delete: if isAuth() && resource.data.author.uid == request.auth.uid;
 
-      // Likes subcollection
+      // Likes subcollection (legacy)
       match /likes/{uid} {
         allow read: if true;
         allow create, delete: if isOwner(uid);
+      }
+
+      // Votes subcollection
+      match /votes/{uid} {
+        allow read: if true;
+        allow create, update, delete: if isOwner(uid);
       }
 
       // Bookmarks subcollection
